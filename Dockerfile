@@ -1,4 +1,4 @@
-FROM n8n:latest
+FROM n8nio/n8n:latest 
 
 # Instalar módulos de Instagram
 RUN npm install -g @mookielianhd/n8n-nodes-instagram
