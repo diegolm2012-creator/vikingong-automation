@@ -1,0 +1,84 @@
+{
+  "name": "Vikingong - Automatización Instagram (Funcional)",
+  "nodes": [
+    {
+      "parameters": {
+        "events": ["comment"]
+      },
+      "type": "@mookielianhd/n8n-nodes-instagram.instagramTrigger",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "id": "trigger",
+      "name": "Instagram Trigger"
+    },
+    {
+      "parameters": {
+        "prompt": "Eres el maestro artesano de Vikingong. Responde al siguiente comentario de Instagram con autoridad serena, mística y profesionalismo premium.\n\nComentario: {{ $json.text }}\nUsuario: {{ $json.username }}\n\nInstrucciones:\n1. Mantén un tono neutro y místico.\n2. Referencia el 'Gong Maestro (Ojo de Horus)' o las 'texturas de forja' si es pertinente.\n3. Cierra SIEMPRE con este bloque:\n\n---\n🔱 Escudo Vikingong\n🌐 www.eltemplodelgong.com\n📧 elcaminodelgong@gmail.com"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [250, 0],
+      "id": "ia-chain",
+      "name": "Vikingong AI Voice"
+    },
+    {
+      "parameters": {
+        "resource": "comments",
+        "operation": "sendPrivateReply",
+        "commentId": "={{ $node[\"Instagram Trigger\"].json[\"id\"] }}",
+        "message": "={{ $json.text }}"
+      },
+      "type": "@mookielianhd/n8n-nodes-instagram.instagram",
+      "typeVersion": 1,
+      "position": [550, 0],
+      "id": "reply",
+      "name": "Instagram Reply"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [250, 150],
+      "id": "groq-model",
+      "name": "Groq Chat Model"
+    }
+  ],
+  "connections": {
+    "Instagram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Vikingong AI Voice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vikingong AI Voice": {
+      "main": [
+        [
+          {
+            "node": "Instagram Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vikingong AI Voice",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
